@@ -31,27 +31,27 @@ impl AudioBuffer {
         let mut reader = WavReader::open(path)?;
         let spec = reader.spec();
 
-        // 根据格式和位深做不同处理
+        // formats and bits per sample
         let samples: Vec<f32> = match (spec.sample_format, spec.bits_per_sample) {
-            // 整数 PCM，小于等于16位
+            // int PCM, <= 16
             (SampleFormat::Int, 1..=16) => reader
                 .samples::<i16>()
                 .map(|r| r.map(|i| i as f32 / i16::MAX as f32))
                 .collect::<Result<Vec<f32>, hound::Error>>()?,
 
-            // 整数 PCM，大于16位（24位、32位）
+            // int PCM，>=16
             (SampleFormat::Int, 17..=32) => reader
                 .samples::<i32>()
                 .map(|r| r.map(|i| i as f32 / i32::MAX as f32))
                 .collect::<Result<Vec<f32>, hound::Error>>()?,
 
-            // 浮点 PCM，32位
+            // float PCM，32
             (SampleFormat::Float, 32) => reader
                 .samples::<f32>()
                 .map(|r| r.map_err(Into::into))
                 .collect::<Result<_, Box<dyn Error>>>()?,
 
-            // 其他格式暂不支持
+            // other unsupported formats
             _ => {
                 return Err(
                     format!(

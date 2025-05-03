@@ -31,8 +31,7 @@ pub enum Command {
         out_path: PathBuf,
 
         #[arg(
-            value_name = "HIT_SOUND_PATH", 
-            default_value = r"D:\Study\Rust Study\arcaea-auto-hitsound\hit_sound_sky.wav",
+            value_name = "HIT_SOUND_PATH",
             value_parser = ValueParser::path_buf()
         )]
         hit_sound_path: Option<PathBuf>,
