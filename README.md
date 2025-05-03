@@ -1,5 +1,8 @@
-## Arcaea Hit Sound Generator
+# Arcaea Hit Sound Generator
 
+> **Credit to: [penguin-71630](https://penguin-71630.github.io/about/)**
+
+## Usage
 ```aiignore
 ~\arcaea_auto_hitsound.exe sound -- <INPUT_PATH> <OUTPUT_PATH> <HIT_SOUND_PATH>
 ```
