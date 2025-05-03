@@ -1,5 +1,3 @@
-#[allow(unused)]
-
 use std::{
     fs::OpenOptions,
     io::{BufRead, BufReader},
@@ -106,10 +104,11 @@ pub fn output(
     let aff_file = OpenOptions::new().read(true).open(&input_path)?;
     let reader = BufReader::new(aff_file);
     
-    // arc(start_time, …, flag) [arctap(tap_time)];
+    // match arc(start_time, …, flag)
     let arc_re = Regex::new(
-        r"^arc\(\s*(?P<start>\d+)\s*,[^)]*?,\s*(?P<flag>true|false)\s*\)\s*(?P<tap>\[arctap\(\d+\)])?;"
+        r"^arc\(\s*(?P<start>\d+)\s*,[^)]*?,\s*(?P<flag>true|false)\s*\)"
     )?;
+    // match arctap(tap_time);
     let arctap_re = Regex::new(r"arctap\(\s*(?P<tap>\d+)\s*\)")?;
     
     // match hold(start_time, end_time);
@@ -139,28 +138,26 @@ pub fn output(
         // arc series
         if let Some(caps) = arc_re.captures(&line) {
             let start: u32 = caps["start"].parse().unwrap();
-            
-            // flag: if arc is blackline: true, else: false
             let flag = &caps["flag"] == "true";
-            
-            if let Some(arctap_str) = caps.name("tap") {
-                // 4. & 5. arc with arctap
-                let tap_caps = arctap_re.captures(arctap_str.as_str()).unwrap();
-                let tap_time: u32 = tap_caps["tap"].parse().unwrap();
-                // 4. & 5. add arctap hit sound
-                hit_times.push(tap_time);
+
+            // catch all arctaps in this arc
+            let taps: Vec<u32> = arctap_re
+                .captures_iter(&line)
+                .map(|c| c["tap"].parse().unwrap())
+                .collect();
+
+            if !taps.is_empty() {
+                // 4. & 5. with arctap: add it no matter flag
+                hit_times.extend(&taps);
+                // 5. flag == false, should arc start
                 if !flag {
-                    // 5. flag == false, add arc start time
                     hit_times.push(start);
                 }
             } else {
-                // 6. & 7. arc without arctap
+                // 6. & 7. without arctap：add arc start only if flag == false
                 if !flag {
-                    // 7：flag == false, add arc start time
                     hit_times.push(start);
                 }
-                
-                // 6. flag == true without arctap, ignore it
             }
             continue;
         }
