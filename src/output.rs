@@ -177,6 +177,8 @@ pub fn output(
         }
     }
     
+    //hit_times.sort_unstable();
+    
     let hit_sound = AudioBuffer::from_wav(hit_sound_path.to_str().unwrap())?;
     let max_hit = hit_times.iter().copied().max().unwrap_or(0);
     

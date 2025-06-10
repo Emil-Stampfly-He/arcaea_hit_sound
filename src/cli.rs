@@ -6,7 +6,7 @@ use clap::builder::ValueParser;
 #[command(
     name = "Arcaea Auto Hit Sound",
     author = "Emil Stampfly He",
-    version = "0.0.0",
+    version = "0.0.1",
     about = "Generate hit sounds based on the .aff file.",
 )]
 pub struct Cli {
