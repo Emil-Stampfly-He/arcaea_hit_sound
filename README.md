@@ -1,5 +1,5 @@
 # Arcaea Hit Sound Generator
-A mini sound generator that parse `.aff` file
+A mini sound generator that parses `.aff` file.
 
 > **Credit to: [penguin-71630](https://penguin-71630.github.io/about/)**
 
